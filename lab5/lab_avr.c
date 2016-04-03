@@ -1,5 +1,4 @@
 #define F_CPU 16000000UL 
-#define LED_PIN 1
 #define DELAY 	100 
 #define PRESS 	!(PINB & 0x80) || !(PINC & 0x01) 
  
