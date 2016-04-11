@@ -1,6 +1,6 @@
 #ifdef AVR
     #define F_CPU   16000000UL                  // clk set to 16MHz 
-    #define DELAY   10
+    #define DELAY   62
     #define TRIG    OCR0A 
     #include <avr/io.h> 
     #include <util/delay.h> 
@@ -22,10 +22,10 @@ void delay(void)
 #endif
 
 #ifdef MSP430
-    #define DELAY   10
+    #define DELAY   62
     #define TRIG    TA0CCR2 
     #include <msp430.h> 
-    #include <stdint.h>
+    #include <stdint.h>  
 
 void init(void)
 {
@@ -34,12 +34,11 @@ void init(void)
     P1DIR |= BIT3;                              // Enable pin TA0.2 (P1.3) to output.
     P1SEL |= BIT3;                              // Set the pin P1.3 to peripherial.
 
-    TA0CCR0 = 0xF0;
-    TA0CTL = TASSEL_1;                          // Use the master clock
-    //TA0CTL |= ID_3;                             // Prescaler off
-    TA0CTL |= MC_1;                             // Mode control: up mode, timer counts to 0xFFFF.
+    TA0CTL = TASSEL_2;                          // Use the master clock
+    TA0CTL |= ID_0;                             // Prescaler
+    TA0CTL |= MC_2;                             // Mode control, continuous, timer counts to 0xFFFF.
     TA0CTL |= TACLR;                            // Timer clear.
-    TA0CCTL2 |= OUTMOD_7;                       // Output mode: Reset/set
+    TA0CCTL2 = OUTMOD_6;                        // Output mode: Toggle/set
  
 }
 
@@ -80,5 +79,5 @@ uint8_t set_bright(uint8_t bright)
         inc = -1;
 
 
-    return bright + inc*0x05;
+    return bright + inc*0x10;
 }

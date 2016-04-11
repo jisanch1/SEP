@@ -2,7 +2,8 @@ NAME=lab
 CC=avr-gcc
 CFLAGS=-Wall -Wextra -Wpedantic --std=gnu99 -Os
 MCU=atmega328p
-PORT=/dev/cu.usbmodemfd1332
+#PORT=/dev/cu.usbmodemfd1332
+PORT=/dev/ttyACM0
 
 compile:
 	$(CC) $(NAME).c $(CFLAGS) -mmcu=$(MCU) -o $(NAME).elf
@@ -14,7 +15,6 @@ burn:
 clean:
 	rm $(NAME).elf $(NAME).hex
 
-	
 
 XNAME=extra_avr
 extra: 
