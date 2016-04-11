@@ -2,7 +2,7 @@ NAME=hello_avr
 CC=avr-gcc
 CFLAGS=-Wall -Wextra -Wpedantic --std=gnu99 -Os
 MCU=atmega328p
-PORT=/dev/cu.usbmodemfa122
+PORT=/dev/cu.usbmodemfd1342
 
 compile:
 	$(CC) $(NAME).c $(CFLAGS) -mmcu=$(MCU) -o $(NAME).elf
