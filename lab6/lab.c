@@ -34,7 +34,7 @@ void init(void)
     P1DIR |= BIT3;                              // Enable pin TA0.2 (P1.3) to output.
     P1SEL |= BIT3;                              // Set the pin P1.3 to peripherial.
 
-    TA0CCR0 = 0xF0;
+    TA0CCR0 = 0xF0;                             // Max value of the timer.
     TA0CTL = TASSEL_1;                          // Use the master clock
     //TA0CTL |= ID_3;                             // Prescaler off
     TA0CTL |= MC_1;                             // Mode control: up mode, timer counts to 0xFFFF.
