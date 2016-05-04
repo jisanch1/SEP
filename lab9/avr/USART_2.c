@@ -39,9 +39,7 @@ int main(void)
 	struct USART_configuration config_19200_7N1 = {NONE, 1, 7, 19200};
 	struct USART_configuration config_19200_7E2 = {EVEN, 2, 7, 19200};
 
-	// Initialise the serial communication interface and print a test string
-	USART_Init(config_57600_8N1);
-	USART_Transmit_String("Congratulations! You are now sending test messages at 57600 8N1.\r\n");
+
 
 	// Initialise the serial communication interface and print a test string
 	USART_Init(config_9600_8N2);
@@ -55,7 +53,10 @@ int main(void)
 	USART_Init(config_19200_7E2);
 	USART_Transmit_String("Even parity and two stop bits have limited use. But 19200 7E2 is great for annoying students.\r\n");
 
-
+	// Initialise the serial communication interface and print a test string
+	USART_Init(config_57600_8N1);
+	USART_Transmit_String("Congratulations! You are now sending test messages at 57600 8N1.\r\n");
+	
 	// Play dead
 	while(1);
 }
