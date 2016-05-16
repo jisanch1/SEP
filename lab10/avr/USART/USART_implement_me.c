@@ -192,7 +192,7 @@ uint8_t USART_Receive_String(char* buffer, uint8_t bufflen)
 		return ERROR;
 	}
 		
-	buffer[++pos] = '\0';
+	buffer[pos] = '\0';
 	return OK;
 }
 
