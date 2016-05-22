@@ -25,8 +25,8 @@
 
 // includes
 #define F_CPU	16000000UL		// MCU Clock Speed - needed for baud rate value computation
-#define TX_BUFFLEN 128			// Send buffer size
-#define RX_BUFFLEN 128			// Receive buffer size
+#define TX_BUFFLEN 30			// Send buffer size
+#define RX_BUFFLEN 30			// Receive buffer size
 #include <util/delay.h> 
 
 // includes
