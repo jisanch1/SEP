@@ -1,6 +1,6 @@
 
-#ifndef _UART328P_H_
-#define _UART328P_H_
+#ifndef _UART_H_
+#define _UART_H_
 
 #ifndef F_CPU
 #define F_CPU	16000000UL		// MCU Clock Speed - 16MHz
@@ -33,5 +33,4 @@ void uart_disable_empty_register_interrupt(void);
 char uart_read_char(void);
 void uart_send_char(char ch);
 
-
-#endif // _UART328P_H_
+#endif // _UART_H_
