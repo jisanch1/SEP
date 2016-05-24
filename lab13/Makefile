@@ -1,5 +1,5 @@
-FILES=exp1.c timer0/timer0.c uart/uart.c
-NAME=led
+FILES=exp1.c timer/timer0.c timer/timer2.c uart/uart.c
+NAME=lab13
 CC=avr-gcc
 CFLAGS=-Wall -Wextra -Wpedantic --std=gnu99 -Os
 MCU=atmega328p

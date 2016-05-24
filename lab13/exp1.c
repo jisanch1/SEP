@@ -4,26 +4,29 @@
 #include <stdio.h>
 #include <avr/interrupt.h>
 
-#include "timer0/timer0.h"
+#include "timer/timer.h"
 #include "uart/uart.h"
 
 #define PRESCALER	64
 #define TIMER_MAX	250
 #define TIME_MS 	1000
 #define BAUDRATE 	57600
+#define SW0_RELEASE (PINB & _BV(PB7))
 #define TX_BUF_SIZE	64
+
 
 uint16_t count;
 uint16_t button_count;
-uint8_t press;
 char tx_buffer[TX_BUF_SIZE];
 char* tx_pos;
+
+void shift_left(void);
+void shift_right(void);
 
 int main(void)
 {
 	count = 0;
 	button_count = 0;
-	press = 0;
 	tx_pos = tx_buffer;
 
 	DDRB |= _BV(DDB5);
@@ -34,10 +37,20 @@ int main(void)
 	PCICR |= _BV(PCIE0);
 	PCMSK0 |= _BV(PCINT7);
 
-	timer0_set_waveform(CTC);
+	DDRC &= ~_BV(DDC0);
+	PORTC |= _BV(PORTC0);
+	PCICR |= _BV(PCIE1);
+	PCMSK1 |= _BV(PCINT8);
+
+	timer0_set_waveform(TIMER_CTC);
 	timer0_enable_clock(PRESCALER);
 	timer0_set_compare_register_A(TIMER_MAX);
 	timer0_enable_compare_A_interrupt();
+
+	timer2_set_waveform(TIMER_CTC);
+	timer2_enable_clock(PRESCALER);
+	timer2_set_compare_register_A(TIMER_MAX);
+	timer2_enable_compare_A_interrupt();
 
 	uart_set_baudrate(BAUDRATE);
 	uart_set_parity(NONE);
@@ -62,26 +75,42 @@ ISR(TIMER0_COMPA_vect)
 	}
 
 	// button
-	if (press)
+	if ( !SW0_RELEASE )
 	{
 		button_count++;	
 	}
 	
 }
 
+ISR(TIMER2_COMPA_vect)
+{
+
+}
+
 ISR(PCINT0_vect)
 {
-	if (PINB & _BV(PB7)) // Suelta boton
+	if (SW0_RELEASE) // Suelta boton
 	{
-		press = 0;
 		// Se escribe el buffer
 		snprintf(tx_buffer, TX_BUF_SIZE, "Button pressed for %d ms.\r\n", button_count);
 		uart_enable_empty_register_interrupt();
 	}
 	else // Apreta boton
 	{
-		press = 1;
 		button_count = 0;
+		//shift_left();
+	}
+}
+
+ISR(PCINT1_vect)
+{
+	if (PINC & _BV(PB0)) // Suelta boton
+	{
+
+	}
+	else // Apreta boton
+	{
+
 	}
 }
 
@@ -98,4 +127,20 @@ ISR(USART_UDRE_vect)
 		tx_pos = tx_buffer;
 		uart_disable_empty_register_interrupt();
 	}
+}
+
+void shift_left(void)
+{
+	PORTD <<= 0x01;
+        	
+    if (PORTD < 0x01 || PORTD > 0x10)
+    	PORTD = 0x01;
+}
+
+void shift_right(void)
+{
+	PORTD >>= 0x01;
+        	
+    if (PORTD < 0x01 || PORTD > 0x10)
+    	PORTD = 0x10;
 }

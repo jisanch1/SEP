@@ -1,34 +1,34 @@
 #include <avr/io.h>
-#include "timer0.h"
+#include "timer.h"
 
 void timer0_set_waveform(waveform_mode_te wf)
 {
 	switch(wf)
 	{
-	case NORMAL:
+	case TIMER_NORMAL:
 		TCCR0A &= ~_BV(WGM00) & ~_BV(WGM01);
 		TCCR0B &= ~_BV(WGM02);
 		break;
-	case CTC:
+	case TIMER_CTC:
 		TCCR0A &= ~_BV(WGM00);
 		TCCR0A |= _BV(WGM01);
 		TCCR0B &= ~_BV(WGM02);
 		break;
-	case FAST_PWM:
+	case TIMER_FAST_PWM:
 		TCCR0A |= _BV(WGM01) | _BV(WGM00);
 		TCCR0B &= ~_BV(WGM02);
 		break;		
-	case PHC_PWM:
+	case TIMER_PHC_PWM:
 		TCCR0A &= ~_BV(WGM01);
 		TCCR0A |= _BV(WGM00);
 		TCCR0B &= ~_BV(WGM02);
 		break;
-	case CTC_FAST_PWM:
+	case TIMER_CTC_FAST_PWM:
 		TCCR0A &= ~_BV(WGM01);
 		TCCR0A |= _BV(WGM00);
 		TCCR0B |= _BV(WGM02);
 		break;
-	case CTC_PHC_PWM:
+	case TIMER_CTC_PHC_PWM:
 		TCCR0A |= _BV(WGM01) | _BV(WGM00);
 		TCCR0B |= _BV(WGM02);
 		break;
@@ -64,10 +64,10 @@ uint8_t timer0_enable_clock(uint16_t prescaler)
 		break;
 	default:
 		timer0_disable_clock();
-		return TIMER0_BAD_CLOCK_SET;
+		return TIMER_BAD_CLOCK_SET;
 		break;
 	}
-	return TIMER0_OK;
+	return TIMER_OK;
 }
 
 inline void timer0_disable_clock(void)
