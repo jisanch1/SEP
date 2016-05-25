@@ -1,4 +1,4 @@
-FILES=exp1.c timer/timer0.c timer/timer2.c uart/uart.c
+FILES=exp1.c led.c button_counter.c debouncer.c timer/timer0.c timer/timer2.c uart/uart.c
 NAME=lab13
 CC=avr-gcc
 CFLAGS=-Wall -Wextra -Wpedantic --std=gnu99 -Os

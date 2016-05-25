@@ -4,32 +4,23 @@
 #include <stdio.h>
 #include <avr/interrupt.h>
 
+#include "exp13.h"
 #include "timer/timer.h"
 #include "uart/uart.h"
 
 #define PRESCALER	64
 #define TIMER_MAX	250
-#define TIME_MS 	1000
 #define BAUDRATE 	57600
 #define SW0_RELEASE (PINB & _BV(PB7))
-#define TX_BUF_SIZE	64
+#define SW0_PRESS	!SW0_RELEASE
 
 
-uint16_t count;
-uint16_t button_count;
-char tx_buffer[TX_BUF_SIZE];
-char* tx_pos;
-
-void shift_left(void);
-void shift_right(void);
 
 int main(void)
 {
-	count = 0;
-	button_count = 0;
-	tx_pos = tx_buffer;
-
-	DDRB |= _BV(DDB5);
+	led_init();
+	cnt_init();
+	deb_init();
 
 	// Button init
 	DDRB &= ~_BV(DDB7);
@@ -67,18 +58,16 @@ int main(void)
 ISR(TIMER0_COMPA_vect)
 {
 	// Led
-	count++;
-	if (count >= TIME_MS)
+	led_toggle();
+
+	// button sw0
+	if (SW0_PRESS)
 	{
-		PORTB ^= _BV(PORTB5);
-		count = 0;
+		cnt_increase();
 	}
 
-	// button
-	if ( !SW0_RELEASE )
-	{
-		button_count++;	
-	}
+	// debouncer
+	deb_countdown();
 	
 }
 
@@ -91,56 +80,31 @@ ISR(PCINT0_vect)
 {
 	if (SW0_RELEASE) // Suelta boton
 	{
-		// Se escribe el buffer
-		snprintf(tx_buffer, TX_BUF_SIZE, "Button pressed for %d ms.\r\n", button_count);
-		uart_enable_empty_register_interrupt();
+		cnt_stop();
 	}
 	else // Apreta boton
 	{
-		button_count = 0;
-		//shift_left();
+		cnt_start();
+		deb_shift_left();
 	}
 }
 
 ISR(PCINT1_vect)
 {
-	if (PINC & _BV(PB0)) // Suelta boton
+	if (PINC & _BV(PINC0)) // Suelta boton
 	{
-
+		deb_release();
 	}
 	else // Apreta boton
 	{
-
+		deb_press();
 	}
 }
 
 ISR(USART_UDRE_vect)
 {
-	if (*tx_pos)	// si hay algo por mandar
-	{
-		uart_send_char(*tx_pos++);
-	}
-	else
-	{
-		// Se limpia el buffer
-		tx_buffer[0] = '\0';
-		tx_pos = tx_buffer;
-		uart_disable_empty_register_interrupt();
-	}
+	cnt_send_next();
+
 }
 
-void shift_left(void)
-{
-	PORTD <<= 0x01;
-        	
-    if (PORTD < 0x01 || PORTD > 0x10)
-    	PORTD = 0x01;
-}
 
-void shift_right(void)
-{
-	PORTD >>= 0x01;
-        	
-    if (PORTD < 0x01 || PORTD > 0x10)
-    	PORTD = 0x10;
-}
