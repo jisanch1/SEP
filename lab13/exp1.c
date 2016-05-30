@@ -38,11 +38,6 @@ int main(void)
 	timer0_set_compare_register_A(TIMER_MAX);
 	timer0_enable_compare_A_interrupt();
 
-	timer2_set_waveform(TIMER_CTC);
-	timer2_enable_clock(PRESCALER);
-	timer2_set_compare_register_A(TIMER_MAX);
-	timer2_enable_compare_A_interrupt();
-
 	uart_set_baudrate(BAUDRATE);
 	uart_set_parity(NONE);
 	uart_set_stopbit(1);
@@ -71,11 +66,6 @@ ISR(TIMER0_COMPA_vect)
 	
 }
 
-ISR(TIMER2_COMPA_vect)
-{
-
-}
-
 ISR(PCINT0_vect)
 {
 	if (SW0_RELEASE) // Suelta boton
@@ -91,6 +81,7 @@ ISR(PCINT0_vect)
 
 ISR(PCINT1_vect)
 {
+	PCICR &= ~_BV(PCIE1);
 	if (PINC & _BV(PINC0)) // Suelta boton
 	{
 		deb_release();
@@ -99,6 +90,7 @@ ISR(PCINT1_vect)
 	{
 		deb_press();
 	}
+	PCICR |= _BV(PCIE1);
 }
 
 ISR(USART_UDRE_vect)
