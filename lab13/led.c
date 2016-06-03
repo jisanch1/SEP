@@ -1,6 +1,6 @@
 #include <avr/io.h>
 
-#define TIME_MS 	1000
+#define TIME_MS 	500
 
 static uint16_t count;
 

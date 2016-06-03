@@ -5,16 +5,14 @@
 #define RELEASE_BLOCK_TIME	20
 
 static uint8_t pressed;
-static uint8_t blocked;
-static uint8_t num;
+static uint8_t block_time;
 
 void deb_init(void)
 {
 	DDRD |= _BV(DDD3) | _BV(DDD4) | _BV(DDD5) | _BV(DDD6) | _BV(DDD7);
 	PORTD = _BV(DDD3);
-	blocked = 0;
 	pressed = 0;
-	num = 0;
+	block_time = 0;
 }
 
 void deb_shift_left(void)
@@ -35,25 +33,25 @@ void deb_shift_right(void)
 
 void deb_press(void)
 {
-	if (!num && !pressed)
+	if (!block_time && !pressed)
 	{
 		deb_shift_right();		
 	}
 	pressed = 1;
-	num = PRESS_BLOCK_TIME;
+	block_time = PRESS_BLOCK_TIME;
 }
 
 void deb_release(void)
 {
 	pressed = 0;
-	num = RELEASE_BLOCK_TIME;
+	block_time = RELEASE_BLOCK_TIME;
 }
 
 void deb_countdown(void)
 {
-	if (num > 0)
+	if (block_time > 0)
 	{
-		num--;
+		block_time--;
 	}
 }
 
