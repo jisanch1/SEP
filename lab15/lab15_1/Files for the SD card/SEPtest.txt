@@ -1,0 +1,9 @@
+I am a SEP lab test file and should be placed on the SD card. I contain many words and a few other fancy characters !"§$%&/()=?`ßäöüÄÖÜ¹²³¼½¬{[]}\¸+*~#'’-_.:,;µ@^°<>|. This is another Sentence.
+In this line, there are less words. It is followed by a blank line.
+
+This	Is		a
+tab	separated	table
+with	three		rows
+
+
+If you read this, the SD card read test was sucessful. Go ahead and *write* some data now!
