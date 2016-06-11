@@ -51,7 +51,8 @@
 void SPI_Master_Init(void)
 {
 	/* Set MOSI and SCK output, all others input */
-	DDRB = (1<<DDB2)|(1<<DDB3)|(1<<DDB5);
+	DDRB = (1<<DDB1)|(1<<DDB2)|(1<<DDB3)|(1<<DDB5);
+	DDRD |= _BV(DDD5);
 	/* Enable SPI, Master, set clock rate fck/16 */
 	SPCR = (1<<SPE)|(1<<MSTR)|(1<<SPR0);
 }
@@ -73,9 +74,21 @@ void SPI_Master_Init(void)
 // the header file.
 void SPI_Master_transmit_char(uint8_t data, bool commandmode)
 {
-		/* Start transmission */
+	
+	if (commandmode)
+	{
+		PORTB &= ~_BV(PORTB1);
+	}
+	PORTD &= ~_BV(PORTD5);
+	/* Start transmission */
 	SPDR = data;
 	/* Wait for transmission complete */ 
 	while(!(SPSR & (1<<SPIF)))
 		;
+	PORTD |= _BV(PORTD5);
+
+	PORTB |= _BV(PORTB1);
+	
 }
+
+

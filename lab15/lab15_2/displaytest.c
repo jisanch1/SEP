@@ -57,12 +57,16 @@ int main(void)
 	
 	// Hardware initialisation
 	USART_Transmit_String("Initialising hardware... ");
+	
 	/*********************************************************
 	 * CODE IS MISSING HERE.
 	 * Add the necessary initialisation code to get the
 	 * display working. 
-	 *********************************************************/ 
-	USART_Transmit_String("success.\n");
+	 *********************************************************/
+	SPI_Master_Init();
+	ST7735_init(); 
+
+	USART_Transmit_String("success.\r\n");
 	
 	
 		
@@ -148,7 +152,7 @@ int main(void)
 		USART_Transmit_String("#");
 		
 		
-		USART_Transmit_String(" finished!\n");
+		USART_Transmit_String(" finished!\r\n");
 		
 		// Here would be a nice place for drawing a bitmap, wouldn't it?
 		
