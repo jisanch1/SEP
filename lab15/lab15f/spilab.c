@@ -79,12 +79,12 @@ void errorHalt(char* msg, uint8_t type) {
 	USART_Transmit_String(", ");
 	USART_Transmit_char(*itoa(type, NULL, 10));
 	USART_Transmit_String("\r\n");
-	while(1);
+	//while(1);
 }
 
 void exp15_1(void)
 {
-	uint8_t err;
+	uint8_t err = 1;
 
 	FATFS fs;     		/* File system structure */
 	uint8_t buf[32];	/* Buffer for card access */
@@ -95,8 +95,13 @@ void exp15_1(void)
 	USART_Transmit_String("Hello! This is the SD card test.\r\n");
   
 	// Initialise SD and file system.
-	USART_Transmit_String("Trying to mount the SD card's file system: ");
-	if ((err = pf_mount(&fs))) errorHalt("pf_mount", err);
+	do
+	{
+		USART_Transmit_String("Trying to mount the SD card's file system: ");
+		if ((err = pf_mount(&fs))) errorHalt("pf_mount", err);
+		_delay_ms(100);
+	} while(err);
+	
 	USART_Transmit_String("success.\r\n");
 	
 	// Open read test file.
@@ -247,15 +252,19 @@ void exp15_2(void)
 
 void exp15_3(void)
 {
-	uint8_t err = 0;
+	uint8_t err = 1;
 	FATFS fs;     		/* File system structure */
 	uint8_t buf[3];		/* Buffer for card access */
 	UINT nr = 1;			/* Used for various file access functions. */
 	uint8_t x = 0;
 	uint8_t y = 0;
 
-	USART_Transmit_String("Trying to mount the SD card's file system: ");
-	if ((err = pf_mount(&fs))) errorHalt("pf_mount", err);
+	do
+	{
+		USART_Transmit_String("Trying to mount the SD card's file system: ");
+		if ((err = pf_mount(&fs))) errorHalt("pf_mount", err);
+		_delay_ms(100);
+	} while(err);
 	USART_Transmit_String("success.\r\n");
 
 	USART_Transmit_String("Trying to open the bmp: ");

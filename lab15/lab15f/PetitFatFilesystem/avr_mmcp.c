@@ -199,7 +199,7 @@ DSTATUS disk_initialize (void)
 #if _USE_WRITE
 	if (CardType && SELECTING) disk_writep(0, 0);	/* Finalize write process if it is in progress */
 #endif
-	init_spi();		/* Initialize ports to control MMC */
+	//init_spi();		/* Initialize ports to control MMC */
 	DESELECT();
 	for (n = 10; n; n--) rcv_spi();	/* 80 dummy clocks with CS=H */
 
