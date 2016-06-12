@@ -22,7 +22,7 @@
 
 void exp15_1(void);
 void exp15_2(void);
-
+void exp15_3(void);
 
 int main(void)
 {
@@ -67,7 +67,9 @@ ISR(PCINT1_vect)
 	}
 	else if (!(PINC & _BV(PC3)))
 	{
-
+		cli();
+		exp15_3();
+		sei();
 	}
 }
 
@@ -242,3 +244,82 @@ void exp15_2(void)
 		
 		// Here would be a nice place for drawing a bitmap, wouldn't it?
 }
+
+void exp15_3(void)
+{
+	uint8_t err = 0;
+	FATFS fs;     		/* File system structure */
+	uint8_t buf[3];		/* Buffer for card access */
+	UINT nr = 1;			/* Used for various file access functions. */
+	uint8_t x = 0;
+	uint8_t y = 0;
+
+	USART_Transmit_String("Trying to mount the SD card's file system: ");
+	if ((err = pf_mount(&fs))) errorHalt("pf_mount", err);
+	USART_Transmit_String("success.\r\n");
+
+	USART_Transmit_String("Trying to open the bmp: ");
+	if ((err = pf_open("rocks.bmp"))) errorHalt("pf_open", err);
+	USART_Transmit_String("success.\r\n");
+
+	USART_Transmit_String("Reading bmp: ");
+	if ((err = pf_lseek(0x36))) 
+		errorHalt("pf_lseek", err);
+
+	while(nr)
+	{
+		if ((err = pf_read(buf, sizeof(buf), &nr))) 
+			errorHalt("pf_read", err);
+
+		//USART_Transmit_char(*itoa(nr, NULL, 10));
+
+		drawPixelRGB(x, y, buf[2], buf[1], buf[0]);
+
+		x++;
+		if (x == 160)
+		{
+			x = 0;
+			y++;
+		}
+		if (y == 128)
+		{
+			y = 0;
+		}
+	}
+	
+	USART_Transmit_String("success.\r\n");
+
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
