@@ -2,6 +2,7 @@
 #define F_CPU	16000000UL
 
 #include <avr/io.h>
+#include <avr/interrupt.h>
 #include <util/delay.h>
 #include <stdint.h>
 #include <string.h>
@@ -28,22 +29,46 @@ int main(void)
 	// Initialises the serial communication interface
 	USART_Init(UBRR_VALUE);
 
+	DDRC &= ~_BV(DDC5) & ~_BV(DDC4) & ~_BV(DDC3);
+	PCICR |= _BV(PCIE1);
+	PCMSK1 |= _BV(PCINT11) | _BV(PCINT12) | _BV(PCINT13);
+
 	USART_Transmit_String("Initialising hardware... ");
 	SPI_Master_Init();
 	ST7735_init(); 
+	sei();
 	USART_Transmit_String("success.\r\n");
 
-	exp15_2();
 
-	_delay_ms(500);
 
-	exp15_1();
+
+	
 
 
 
 
 	// Play dead
 	while(1);
+}
+
+ISR(PCINT1_vect)
+{
+	if (!(PINC & _BV(PC5)))
+	{
+		cli();
+		exp15_1();
+		sei();
+	}
+	else if (!(PINC & _BV(PC4)))
+	{
+		cli();
+		exp15_2();
+		sei();
+	}
+	else if (!(PINC & _BV(PC3)))
+	{
+
+	}
 }
 
 void errorHalt(char* msg, uint8_t type) {
