@@ -1,0 +1,23 @@
+FILES=spilab.c USART/USART_implement_me.c SPI/SPI_implement_me.c PetitFatFilesystem/avr_mmcp.c PetitFatFilesystem/pff.c display/ST7735_commands.c display/graphic_shapes.c display/testroutines.c
+NAME=display
+CC=avr-gcc
+CFLAGS=-Wall -Wextra -Wpedantic --std=gnu99 -Os
+MCU=atmega328p
+MPORT=/dev/cu.usbmodemfd142
+PORT=/dev/ttyACM0
+
+compile:
+	$(CC) $(FILES) $(CFLAGS) -mmcu=$(MCU) -o $(NAME).elf
+	avr-objcopy -j .text -j .data -O ihex $(NAME).elf $(NAME).hex
+
+lburn: 
+	avrdude -v -p atmega328p -F -c stk500v1 -P $(PORT) -b57600 -D -V -U flash:w:$(NAME).hex:i
+
+mburn:
+	avrdude -v -p atmega328p -F -c stk500v1 -P $(MPORT) -b57600 -D -V -U flash:w:$(NAME).hex:i
+
+clean:
+	rm $(NAME).elf $(NAME).hex
+
+
+
