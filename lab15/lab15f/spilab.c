@@ -284,8 +284,15 @@ void exp15_3(void)
 	} while(err);
 	USART_Transmit_String("success.\r\n");
 
-	USART_Transmit_String("Trying to open the bmp: ");
-	if ((err = pf_open("rocks.bmp"))) errorHalt("pf_open", err);
+	char name[32];
+	USART_Transmit_String("Trying to open the bmp. Please enter name of the file:");	
+	USART_Receive_String(name, sizeof(name));
+	while ((err = pf_open(name)))
+	{
+		errorHalt("pf_open", err);
+		USART_Transmit_String("File not found. Please enter name again:");
+		USART_Receive_String(name, sizeof(name));
+	} 
 	USART_Transmit_String("success.\r\n");
 
 	USART_Transmit_String("Reading bmp: ");
