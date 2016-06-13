@@ -33,6 +33,9 @@ int main(void)
 	PCICR |= _BV(PCIE1);
 	PCMSK1 |= _BV(PCINT11) | _BV(PCINT12) | _BV(PCINT13);
 
+	DDRC |= _BV(DDC2);
+	PORTC &= ~_BV(PORTC2);
+
 	USART_Transmit_String("Initialising hardware... ");
 	SPI_Master_Init();
 	ST7735_init(); 
@@ -51,13 +54,25 @@ int main(void)
 	while(1);
 }
 
+void led_on(void)
+{
+	PORTC |= _BV(PORTC2);
+}
+
+void led_off(void)
+{
+	PORTC &= ~_BV(PORTC2);
+}
+
 ISR(PCINT1_vect)
 {
 	if (!(PINC & _BV(PC5)))
 	{
+		led_on();
 		cli();
 		exp15_1();
 		sei();
+		led_off();
 	}
 	else if (!(PINC & _BV(PC4)))
 	{
@@ -67,9 +82,11 @@ ISR(PCINT1_vect)
 	}
 	else if (!(PINC & _BV(PC3)))
 	{
+		led_on();
 		cli();
 		exp15_3();
 		sei();
+		led_off();
 	}
 }
 
