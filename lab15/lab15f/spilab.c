@@ -306,7 +306,7 @@ void exp15_3(void)
 
 		//USART_Transmit_char(*itoa(nr, NULL, 10));
 
-		drawPixelRGB(x, y, buf[2], buf[1], buf[0]);
+		drawPixelRGB(159-x, y, buf[2], buf[1], buf[0]);
 
 		x++;
 		if (x == 160)
