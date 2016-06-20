@@ -5,6 +5,7 @@
 static stm_state state = OFF;
 static int set_temp;
 static uint8_t delta_temp;
+static uint8_t blocked;
 
 void stm_init(int set, uint8_t delta) {
 
@@ -37,6 +38,11 @@ void stm_init(int set, uint8_t delta) {
 	P2IES |= BIT1;
 	P2IFG &= ~BIT1;
 	P2IE |= BIT1;
+
+	TA1CTL = TASSEL_2 + ID_2;		  			// SMCLK, off, clk/4 (1Mhz)
+	TA1CCR0 = 50000;							// count to 50 ms
+	TA1CCTL0 = CCIE;                          	// CCR0 interrupt enabled
+	TA1CTL |= TACLR;  							// clear TAR
 }
 
 static void output_handler(void) {
@@ -83,14 +89,40 @@ int get_set_temp(void) {
 	return set_temp;
 }
 
+void block(void) {
+	blocked = 1;
+	TA1CTL |= MC_1;
+}
+
+void desblock(void) {
+	blocked = 0;
+	TA1CTL |= MC_0;
+}
+
+
 void __attribute__ ((interrupt(PORT1_VECTOR))) Port_1 (void) {
 
-	set_temp++;
+	if (!blocked)
+	{
+		set_temp++;
+		block();
+	}
+	
 	P1IFG &= ~BIT1;
 }
 
 void __attribute__ ((interrupt(PORT2_VECTOR))) Port_2 (void) {
 
-	set_temp--;
+	if (!blocked)
+	{
+		set_temp--;
+		block();
+	}
+
 	P2IFG &= ~BIT1;
+}
+
+void __attribute__ ((interrupt(TIMER1_A0_VECTOR))) TIMER1_A0_ISR (void) {
+
+	desblock();
 }

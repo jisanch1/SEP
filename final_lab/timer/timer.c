@@ -14,6 +14,7 @@ void timer_init(void) {
 	TA0CCR0 = 10000;							// count to 10 ms
 	TA0CCTL0 = CCIE;                          	// CCR0 interrupt enabled
 	TA0CTL |= TACLR;  							// clear TAR
+
 	__no_operation();
 }
 
@@ -39,4 +40,6 @@ void __attribute__ ((interrupt(TIMER0_A0_VECTOR))) TIMER0_A0_ISR (void) {
 	}
 
 }
+
+
 

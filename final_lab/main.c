@@ -41,11 +41,11 @@ void repeat(void) {
 void write(int temp, stm_state state) {
 
 	if (temp > T_MAX) {
-		uart_transmit_string(" \tTemp too high...    ");
+		uart_transmit_string(" \tTemp too high...             \r");
 		return;
 	}
 	else if (temp < T_MIN) {
-		uart_transmit_string(" \tTemp too low...    ");
+		uart_transmit_string(" \tTemp too low...              \r");
 		return;
 	}
 	char buf[5];
