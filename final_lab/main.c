@@ -21,7 +21,7 @@ int main(void) {
 	timer_init();
 	
 
-	uart_transmit_string("Iniciando...           \r\n\r\n\r\n");
+	uart_transmit_string("Iniciando...                       \r\n\r\n\r\n");
 
 	timer_suscribe(repeat);
 
