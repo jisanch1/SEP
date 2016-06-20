@@ -13,5 +13,6 @@ typedef enum {
 
 void stm_init(int set, uint8_t delta);
 stm_state stm_handler(int temp);
+int get_set_temp(void);
 
 #endif

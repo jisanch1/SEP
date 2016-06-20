@@ -19,27 +19,40 @@ void stm_init(int set, uint8_t delta) {
 		delta_temp = delta;
 	}
 	else {
-		delta_temp = 5;
+		delta_temp = 3;
 	}
 
 	// output
-	P8DIR |= BIT1 + BIT2;
+	P4DIR |= BIT1 + BIT2;
+
+	// buttons
+	P1REN |= BIT1;
+	P1OUT |= BIT1;
+	P1IES |= BIT1;
+	P1IFG &= ~BIT1;
+	P1IE |= BIT1;
+
+	P2REN |= BIT1;
+	P2OUT |= BIT1;
+	P2IES |= BIT1;
+	P2IFG &= ~BIT1;
+	P2IE |= BIT1;
 }
 
 static void output_handler(void) {
 
 	switch (state) {
 	case OFF:
-		P8OUT &= ~BIT1;
-		P8OUT &= ~BIT2;
+		P4OUT &= ~BIT1;
+		P4OUT &= ~BIT2;
 		break;
 	case HEAT:
-		P8OUT &= ~BIT2;
-		P8OUT |= BIT1;
+		P4OUT &= ~BIT2;
+		P4OUT |= BIT1;
 		break;
 	case COOL:
-		P8OUT &= ~BIT1;
-		P8OUT |= BIT2;
+		P4OUT &= ~BIT1;
+		P4OUT |= BIT2;
 		break;
 	}
 }
@@ -65,3 +78,19 @@ stm_state stm_handler(int temp) {
 	return state;
 }
 
+int get_set_temp(void) {
+
+	return set_temp;
+}
+
+void __attribute__ ((interrupt(PORT1_VECTOR))) Port_1 (void) {
+
+	set_temp++;
+	P1IFG &= ~BIT1;
+}
+
+void __attribute__ ((interrupt(PORT2_VECTOR))) Port_2 (void) {
+
+	set_temp--;
+	P2IFG &= ~BIT1;
+}

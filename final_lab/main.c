@@ -17,7 +17,7 @@ int main(void) {
 	clock_init();
 	uart_init();
 	sensor_init();
-	stm_init(25, 5);
+	stm_init(22, 3);
 	timer_init();
 	
 
@@ -49,7 +49,13 @@ void write(int temp, stm_state state) {
 		return;
 	}
 	char buf[5];
-	uart_transmit_string(" \tTemp = ");
+	int set_temp = get_set_temp();
+
+	uart_transmit_string(" \tSet = ");
+	itoa(set_temp,buf,10);
+	uart_transmit_string(buf);
+
+	uart_transmit_string(",     Temp = ");
 	itoa(temp,buf,10);
 	uart_transmit_string(buf);
 
